@@ -3,18 +3,24 @@ const fs = require('fs');
 const qs = require("querystring");
 
 const server = http.createServer(function(req,res){
+
+    
+    
     switch (req.method) {
         case "GET": 
             break;
         case "POST":
+            res.setHeader('Access-Control-Allow-Origin', '*');
             req.on("data", function (chunk) {
-                let action = JSON.parse(chunk).action;
-                let album = JSON.parse(chunk).album;
-                if(action === 'albums'){
+                console.log("cokolwiek");
+                let action = JSON.parse(chunk).body.action;
+                console.log(action);
+                if(action == 'albums'){
+                    console.log('post');
                     readAlbums(req, res);
-                }else if(action === 'album'){
+                }else if(action == 'album'){
                     readAlbum(req,res,album);
-                }else if(action === 'covers'){
+                }else if(action == 'covers'){
                     readCovers(req,res, album);
                 }
             })
@@ -63,7 +69,11 @@ const server = http.createServer(function(req,res){
                     var stats = fs.statSync(`${__dirname}/static/mp3/${responseObj['dirs'][0]}/${file}`);
                     responseObj['files'].push({file: file, size: stats.size})
                 });  
+                
                 res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
+                
+            //    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+            //    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
                 res.end(JSON.stringify(responseObj));  
             });        
         });

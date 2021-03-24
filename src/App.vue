@@ -1,28 +1,39 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="covers-container">
+  <!--  <Cover v-for="album in dirs" v-bind:key="album" v-bind:album="album"></Cover>-->
+    </div>
+    <div class="items-container">
+      {{dirs}}
+      {{files}}
+   <!-- <Item v-for="song in files" v-bind:key="song" v-bind:song="song"></Item>-->
+    </div>
   </div>
 </template>
-
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+//import Cover from './components/Cover.vue'
+//import Item from './components/Item.vue'
+  
 export default {
   name: 'App',
+  data: function() {
+    return{
+      dirs: [],
+      covers: [],
+      files: []
+  }},
   components: {
-    HelloWorld
-  }
+  },
+  methods:{
+  },
+  mounted: function(){
+    this.$store.dispatch("getAlbums");
+    //this.$store.dispatch("getCovers");
+    this.dirs = this.$store.state.dirs;
+    this.files = this.$store.state.files;
+}
 }
 </script>
-
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>

@@ -3,6 +3,7 @@ node_modules
 /dist
 
 backend/static/mp3
+backend/static/covers
 # local env files
 .env.local
 .env.*.local
