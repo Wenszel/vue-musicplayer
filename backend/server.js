@@ -4,23 +4,46 @@ const qs = require("querystring");
 
 const server = http.createServer(function(req,res){
     switch (req.method) {
-        case "GET":
-            
+        case "GET": 
             break;
         case "POST":
             req.on("data", function (chunk) {
                 let action = JSON.parse(chunk).action;
-                if(action === 'first'){
+                let album = JSON.parse(chunk).album;
+                if(action === 'albums'){
                     readAlbums(req, res);
-                }else if(action === 'second'){
-
-                }else{
-                    
+                }else if(action === 'album'){
+                    readAlbum(req,res,album);
+                }else if(action === 'covers'){
+                    readCovers(req,res, album);
                 }
             })
             break;
     }
-    function readAlbums(req, res) {
+    function readCovers( req, res, album ){
+        var img = fs.readFileSync(`${__dirname}/static/covers/${album}/cover.jpg`);
+        res.writeHead(200, {'Content-Type': 'image/jpg' });
+        res.end(img, 'binary');
+    }
+    function readAlbum( req, res, album ){
+        let location = `${__dirname}/static/mp3/${album}`
+        responseObj = {
+            album: album,
+            files: [],
+        };
+        fs.readdir(location , function (err, files) {
+            if (err) {
+                return console.log(err);
+            }
+            files.forEach( file => {
+                var stats = fs.statSync(`${location}/${file}`);
+                responseObj['files'].push({file: file, size: stats.size})
+            });  
+            res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
+            res.end(JSON.stringify(responseObj));  
+        });    
+    }
+    function readAlbums( req, res ) {
         let responseObj = {
             dirs: [],
             files: [],
@@ -37,7 +60,8 @@ const server = http.createServer(function(req,res){
                     return console.log(err);
                 }
                 files.forEach( file => {
-                    responseObj['files'].push(file)
+                    var stats = fs.statSync(`${__dirname}/static/mp3/${responseObj['dirs'][0]}/${file}`);
+                    responseObj['files'].push({file: file, size: stats.size})
                 });  
                 res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
                 res.end(JSON.stringify(responseObj));  
