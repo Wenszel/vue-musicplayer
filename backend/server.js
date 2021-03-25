@@ -7,6 +7,7 @@ const server = http.createServer(function(req,res){
     switch (req.method) {
         case "GET": 
             console.log(decodeURI(req.url));
+            console.log(req.url.indexOf(".jpg"))
             if(req.url.indexOf(".jpg") != -1){
                 var request = url.parse(req.url, true);
                 var album = request.pathname;
@@ -64,7 +65,10 @@ const server = http.createServer(function(req,res){
             }
             files.forEach( file => {
                 var stats = fs.statSync(`${location}/${file}`);
-                responseObj['files'].push({file: file, size: bytesToSize(stats.size)})
+                responseObj['files'].push({
+                    file: file, 
+                    size: bytesToSize(stats.size)
+                })
             });  
             res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
             res.end(JSON.stringify(responseObj));  

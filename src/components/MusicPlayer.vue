@@ -1,7 +1,8 @@
 <template>
 <div class="player-container">
   <audio id="audio">
-    <source src="http://localhost:3000/static/mp3/album1/01 Czlowiek z dziura zamiast krtani.mp3"
+    <source
+    :src="currentSongPath"
     id="audio_src"
     type="audio/mp3" />
   </audio>
@@ -17,7 +18,6 @@ export default {
   name: 'MusicPlayer',
   methods: {
     handleResumeClick(){
-      this.load();
       document.getElementById("audio").play();
       //document.getElementById("audio").pause();
     },
@@ -33,13 +33,16 @@ export default {
     
   },
   computed: {
-    song(){
+    currentSong(){
       return this.$store.getters.getCurrentSong;
+    },
+    currentAlbum(){
+      return this.$store.getters.getCurrentAlbum;
+    },
+    currentSongPath(){
+      return this.$store.getters.getCurrentSongPath; 
     }
   },
-  mounted: function(){
-    this.$store.dispatch("getAlbums");
-}
 }
 </script>
 
@@ -55,7 +58,7 @@ export default {
     z-index: 1;
     width: 100vw;
     background-color: grey;
-    height: 10vh;
+    height: 70px;
   }
   .player-button{
     color: white;

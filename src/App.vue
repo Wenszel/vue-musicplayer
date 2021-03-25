@@ -7,7 +7,11 @@
       </div>
       <!--Displays songs of album-->
       <div class="items-container">
-        <Item v-for="song in files" :key="song.file" :song="song"></Item>
+        <Item 
+          v-for="song in files" 
+          :key="song.file" 
+          :song="song" 
+        />       
       </div>
     </div>
     <MusicPlayer/>
@@ -25,8 +29,6 @@ export default {
   components: {
     Item, Cover, MusicPlayer
   },
-  methods:{
-  },
   computed: { 
     dirs(){
       return this.$store.getters.getAllDirs;
@@ -37,6 +39,8 @@ export default {
 },
   mounted: function(){
     this.$store.dispatch("getAlbums");
+    
+
 }
 }
 </script>
@@ -46,7 +50,10 @@ export default {
     margin: 0px;
     padding: 0px;
   }
-  #menu{
+  #app{
+    height: 100vh;
+  }
+  #menu{   
     display: flex;
     flex-direction: row;
   }
@@ -55,6 +62,7 @@ export default {
     flex-direction: column;
   }
   .covers-container{
+    height: calc(100% - 70px);
     overflow: scroll;
   }
 </style>

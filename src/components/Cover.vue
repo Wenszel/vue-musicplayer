@@ -10,6 +10,8 @@ export default {
   methods:{
     handleCoverClick(){
       this.$store.dispatch("getAlbum",this.album);
+      this.$store.commit("SET_CURRENT_ALBUM", this.album);
+
     }
   },
   data: function(){
