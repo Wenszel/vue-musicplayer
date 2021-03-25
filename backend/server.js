@@ -42,7 +42,8 @@ const server = http.createServer(function(req,res){
     }
 
     function readAlbum( req, res, album ){
-        let location = `${__dirname}/static/mp3/${album}`
+        console.log(album);
+        let location = `${__dirname}/static/mp3/${album.album}`
         responseObj = {
             album: album,
             files: [],
