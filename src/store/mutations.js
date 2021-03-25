@@ -6,8 +6,6 @@ const mutations = {
     SET_FILES(state, files) {
         state.files = files;
     },
-    SET_COVERS(state, covers) {
-        state.covers = covers;
-    }
+    
 }
 export default mutations;

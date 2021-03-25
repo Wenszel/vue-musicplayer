@@ -1,36 +1,46 @@
 const http = require("http");
 const fs = require('fs');
 const qs = require("querystring");
-
+const url = require("url");
 const server = http.createServer(function(req,res){
 
-    
-    
     switch (req.method) {
         case "GET": 
+            var request = url.parse(req.url, true);
+            var album = request.pathname;
+            readCovers(req,res,album);
             break;
         case "POST":
             res.setHeader('Access-Control-Allow-Origin', '*');
             req.on("data", function (chunk) {
-                console.log("cokolwiek");
-                let action = JSON.parse(chunk).body.action;
-                console.log(action);
+
+                let body = JSON.parse(chunk).body
+                let {action, album} = body;
+
                 if(action == 'albums'){
-                    console.log('post');
                     readAlbums(req, res);
                 }else if(action == 'album'){
                     readAlbum(req,res,album);
-                }else if(action == 'covers'){
-                    readCovers(req,res, album);
                 }
             })
             break;
     }
+
     function readCovers( req, res, album ){
-        var img = fs.readFileSync(`${__dirname}/static/covers/${album}/cover.jpg`);
-        res.writeHead(200, {'Content-Type': 'image/jpg' });
-        res.end(img, 'binary');
+        console.log(album);
+        //console.log(`${__dirname}/static/mp3/${album}/cover.jpg`)
+        fs.readFile(__dirname + album, function(error, content) {
+            if (error) {
+                res.writeHead(500);
+                res.end();
+            }
+            else {
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(content, 'utf-8');
+            }
+        });
     }
+
     function readAlbum( req, res, album ){
         let location = `${__dirname}/static/mp3/${album}`
         responseObj = {
@@ -49,6 +59,7 @@ const server = http.createServer(function(req,res){
             res.end(JSON.stringify(responseObj));  
         });    
     }
+
     function readAlbums( req, res ) {
         let responseObj = {
             dirs: [],
@@ -71,9 +82,6 @@ const server = http.createServer(function(req,res){
                 });  
                 
                 res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
-                
-            //    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-            //    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
                 res.end(JSON.stringify(responseObj));  
             });        
         });

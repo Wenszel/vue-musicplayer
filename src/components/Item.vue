@@ -1,13 +1,13 @@
 <template>
   <div class="items-container">
-    {{name}} {{size}}
+    {{song.file}} {{song.size}}
   </div>
 </template>
 
 <script>
 export default {
   name: 'Item',
-  props: ['name', 'size']
+  props: ['song']
 }
 </script>
 

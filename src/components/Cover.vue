@@ -1,11 +1,18 @@
 <template>
-  <img class="cover-container" v-bind:src="src"/>
+<div>
+  <img class="cover-container" :src="src">
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'Item',
-  props: ['src']
+  name: 'Cover',
+  data: function(){
+    return{
+      src: `http://localhost:3000/static/covers/${this.album}/cover.jpg`,
+    }
+  },
+  props: ['album'],
 }
 </script>
 
