@@ -2,7 +2,7 @@
   <div class="item-container">
     <span class="song-name">{{song.file}}</span>
     <span class="song-size">{{song.size}}</span>
-    <div class="player-button" @click="playSong" v-text="this.currentSong === song.file ? '||' : '>'"></div>
+    <div class="player-button" @click="handlePlayerClick" v-text="currentSong === song.file && isCurrentlyPlaying ? '||' : '>'"></div>
   </div>
 </template>
 
@@ -10,11 +10,17 @@
 export default {
   name: 'Item',
   methods:{
-    playSong(){
-      this.$store.commit("SET_CURRENT_SONG", this.song.file);
-      this.$store.commit("SET_CURRENT_SONG_PATH");
-      document.getElementById("audio").load();
-      //document.getElementById("audio").play();
+    handlePlayerClick(){
+      if(!this.isCurrentlyPlaying || (this.isCurrentlyPlaying && this.currentSong !== this.song.file)){
+        this.$store.commit("SET_CURRENT_SONG", this.song.file);
+        this.$store.commit("SET_IS_CURRENTLY_PLAYING", true)
+        this.$store.commit("SET_CURRENT_SONG_PATH");
+        document.getElementById("audio").load();
+        document.getElementById("audio").play();
+      }else{
+        this.$store.commit("SET_IS_CURRENTLY_PLAYING", false);
+        document.getElementById("audio").pause();
+      }
     }
   },
   computed: {
@@ -22,7 +28,7 @@ export default {
       return this.$store.getters.getCurrentSong;
     },
     isCurrentlyPlaying(){
-      return this.$store.getter.getIsCurrentlyPlaying;
+      return this.$store.getters.getIsCurrentlyPlaying;
     }
 
   },

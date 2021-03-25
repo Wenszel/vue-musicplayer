@@ -17,8 +17,8 @@ const mutations = {
     SET_CURRENT_SONG_PATH(state){
         state.currentSongPath = `http://localhost:3000/static/mp3/${state.currentAlbum}/${state.currentSong}`;
     },
-    SET_IS_CURRENLY_PLAYING(state){
-        state.isCurrentlyPlaying = !state.isCurrentlyPlaying;
+    SET_IS_CURRENTLY_PLAYING(state, isCurrentlyPlaying){
+        state.isCurrentlyPlaying = isCurrentlyPlaying;
     }
 }
 export default mutations;
