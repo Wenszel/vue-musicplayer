@@ -6,9 +6,19 @@ const server = http.createServer(function(req,res){
 
     switch (req.method) {
         case "GET": 
-            var request = url.parse(req.url, true);
-            var album = request.pathname;
-            readCovers(req,res,album);
+            console.log(decodeURI(req.url));
+            if(req.url.indexOf(".jpg") != -1){
+                var request = url.parse(req.url, true);
+                var album = request.pathname;
+                readCovers(req,res,album);
+            }
+            else if (req.url.indexOf(".mp3") != -1) {
+                fs.readFile(__dirname + decodeURI(req.url), function (error, data) {
+                   res.writeHead(200, { "Content-type": "audio/mpeg" });
+                   res.write(data);
+                   res.end();
+                })
+             }
             break;
         case "POST":
             res.setHeader('Access-Control-Allow-Origin', '*');
@@ -54,7 +64,7 @@ const server = http.createServer(function(req,res){
             }
             files.forEach( file => {
                 var stats = fs.statSync(`${location}/${file}`);
-                responseObj['files'].push({file: file, size: stats.size})
+                responseObj['files'].push({file: file, size: bytesToSize(stats.size)})
             });  
             res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
             res.end(JSON.stringify(responseObj));  
@@ -79,7 +89,7 @@ const server = http.createServer(function(req,res){
                 }
                 files.forEach( file => {
                     var stats = fs.statSync(`${__dirname}/static/mp3/${responseObj['dirs'][0]}/${file}`);
-                    responseObj['files'].push({file: file, size: stats.size})
+                    responseObj['files'].push({file: file, size: bytesToSize(stats.size)})
                 });  
                 
                 res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
@@ -88,5 +98,13 @@ const server = http.createServer(function(req,res){
         });
     }
 });
+
+//Coverts Bytes to different unit prefix based on file size
+function bytesToSize(bytes) {
+    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes == 0) return '0 Byte';
+    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+ }
 
 server.listen(3000, ()=>{console.log("Server launched")})

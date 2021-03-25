@@ -1,22 +1,29 @@
 <template>
   <div id="app">
-    <div class="covers-container">
-      <Cover v-for="album in dirs" :key="album" :album="album"></Cover>
+    <div id="menu">
+      <!--Displays selection menu of albums-->
+      <div class="covers-container">
+        <Cover v-for="album in dirs" :key="album" :album="album"></Cover>
+      </div>
+      <!--Displays songs of album-->
+      <div class="items-container">
+        <Item v-for="song in files" :key="song.file" :song="song"></Item>
+      </div>
     </div>
-    <div class="items-container">
-    <Item v-for="song in files" :key="song.file" :song="song"></Item>
-    </div>
+    <MusicPlayer/>
   </div>
 </template>
-<script>
 
+<script>
+//importing components
 import Cover from './components/Cover.vue'
 import Item from './components/Item.vue'
-  
+import MusicPlayer from './components/MusicPlayer.vue'
+
 export default {
   name: 'App',
   components: {
-    Item, Cover
+    Item, Cover, MusicPlayer
   },
   methods:{
   },
@@ -33,6 +40,21 @@ export default {
 }
 }
 </script>
-<style>
 
+<style>
+  *{
+    margin: 0px;
+    padding: 0px;
+  }
+  #menu{
+    display: flex;
+    flex-direction: row;
+  }
+  .items-container{
+    display: flex;
+    flex-direction: column;
+  }
+  .covers-container{
+    overflow: scroll;
+  }
 </style>

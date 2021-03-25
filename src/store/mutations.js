@@ -6,6 +6,8 @@ const mutations = {
     SET_FILES(state, files) {
         state.files = files;
     },
-    
+    SET_CURRENT_SONG(state,song) {
+        state.currentSong = song;
+    }
 }
 export default mutations;

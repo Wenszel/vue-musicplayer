@@ -2,8 +2,8 @@ const getters = {
     getAllDirs: function (state) {
         return state.dirs;
     },
-    getAllCovers: function (state) {
-        return state.covers;
+    getCurrentSong: function (state) {
+        return state.currentSong;
     },
     getAllFiles: function (state) {
         return state.files;
