@@ -13,7 +13,7 @@ export default {
   },
   data: function(){
     return{
-      src: `http://localhost:3000/static/covers/${this.album}/cover.jpg`,
+      src: `http://localhost:3000/static/mp3/${this.album}/cover.jpg`,
     }
   },
   props: ['album'],

@@ -2,11 +2,11 @@
   <div id="app">
     <div id="menu">
       <!--Displays selection menu of albums-->
-      <div class="covers-container">
+      <div class="container covers-container">
         <Cover v-for="album in dirs" :key="album" :album="album"></Cover>
       </div>
       <!--Displays songs of album-->
-      <div class="items-container">
+      <div class="container items-container">
         <Item 
           v-for="song in files" 
           :key="song.file" 
@@ -57,14 +57,15 @@ export default {
     display: flex;
     flex-direction: row;
   }
-  .items-container{
-    display: flex;
-    flex-direction: column;
-  }
-  .covers-container{
-    height: calc(100% - 70px);
+  .container{
+    background-color: lightgrey;
+    height: 90vh;
     display: flex;
     flex-direction: column;
     overflow: scroll;
+  }
+  .items-container{
+    font-weight: bold;
+    width: 90%;
   }
 </style>

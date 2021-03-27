@@ -119,7 +119,7 @@ export default {
     z-index: 1;
     width: 100vw;
     background-color: grey;
-    height: 70px;
+    height: 10vh;
   }
   .current-song{
     position: absolute;

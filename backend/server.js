@@ -6,12 +6,17 @@ const server = http.createServer(function(req,res){
 
     switch (req.method) {
         case "GET": 
-            console.log(decodeURI(req.url));
-            console.log(req.url.indexOf(".jpg"))
             if(req.url.indexOf(".jpg") != -1){
-                var request = url.parse(req.url, true);
-                var album = request.pathname;
-                readCovers(req,res,album);
+                    fs.readFile(__dirname + decodeURI(req.url), function(error, content) {
+                        if (error) {
+                            res.writeHead(500);
+                            res.end();
+                        }
+                        else {
+                            res.writeHead(200, { 'Content-Type': 'text/html' });
+                            res.end(content, 'utf-8');
+                        }
+                    });
             }
             else if (req.url.indexOf(".mp3") != -1) {
                 fs.readFile(__dirname + decodeURI(req.url), function (error, data) {
@@ -42,21 +47,6 @@ const server = http.createServer(function(req,res){
             break;
     }
 
-    function readCovers( req, res, album ){
-        console.log(album);
-        //console.log(`${__dirname}/static/mp3/${album}/cover.jpg`)
-        fs.readFile(__dirname + album, function(error, content) {
-            if (error) {
-                res.writeHead(500);
-                res.end();
-            }
-            else {
-                res.writeHead(200, { 'Content-Type': 'text/html' });
-                res.end(content, 'utf-8');
-            }
-        });
-    }
-
     function readAlbum( req, res, album ){
         console.log(album);
         let location = `${__dirname}/static/mp3/${album.album}`
@@ -69,11 +59,13 @@ const server = http.createServer(function(req,res){
                 return console.log(err);
             }
             files.forEach( file => {
-                var stats = fs.statSync(`${location}/${file}`);
-                responseObj['files'].push({
-                    file: file, 
-                    size: bytesToSize(stats.size)
-                })
+                if(file.indexOf('.mp3') != -1){
+                    var stats = fs.statSync(`${location}/${file}`);
+                    responseObj['files'].push({
+                        file: file, 
+                        size: bytesToSize(stats.size)
+                    })
+                }  
             });  
             res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
             res.end(JSON.stringify(responseObj));  
@@ -97,8 +89,10 @@ const server = http.createServer(function(req,res){
                     return console.log(err);
                 }
                 files.forEach( file => {
-                    var stats = fs.statSync(`${__dirname}/static/mp3/${responseObj['dirs'][0]}/${file}`);
-                    responseObj['files'].push({file: file, size: bytesToSize(stats.size)})
+                    if(file.indexOf('.mp3') != -1){
+                        var stats = fs.statSync(`${__dirname}/static/mp3/${responseObj['dirs'][0]}/${file}`);
+                        responseObj['files'].push({file: file, size: bytesToSize(stats.size)})
+                    }
                 });  
                 
                 res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});

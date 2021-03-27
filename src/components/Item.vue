@@ -54,15 +54,20 @@ export default {
 <style>
 .item-container{
   display: flex;
+  border-bottom: 1px solid black;
   flex-direction: row;
+}
+.item-container>div{
+  position: absolute;
+  height: 40px !important;
+  width: 40px !important;
+  right: 0;
 }
 .song-name{
   width: 500px;
-  background-color: cyan;
 }
 .song-size{
   width:50px;
-  background-color:cyan;
 }
 .item-container>span{
   margin:10px;
