@@ -11,6 +11,12 @@ const getters = {
     getCurrentAlbum: function (state) {
         return state.currentAlbum;
     },
+    getCurrentTime: function (state) {
+        return state.currentTime;
+    },
+    getCurrentSongDuration: function (state) {
+        return state.currentSongDuration;
+    },
     getCurrentSongPath: function (state) {
         return state.currentSongPath;
     },

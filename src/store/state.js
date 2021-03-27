@@ -3,6 +3,8 @@ const state = {
     files: [],
     currentSong: '',
     currentAlbum: '',
+    currentTime: '',
+    currentSongDuration: '',
     currentSongPath: '',
     isCurrentlyPlaying: false,
 }

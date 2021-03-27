@@ -63,6 +63,8 @@ export default {
   }
   .covers-container{
     height: calc(100% - 70px);
+    display: flex;
+    flex-direction: column;
     overflow: scroll;
   }
 </style>

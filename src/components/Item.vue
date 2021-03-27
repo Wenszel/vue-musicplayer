@@ -7,19 +7,34 @@
 </template>
 
 <script>
+
+import convertSecToTime from '../convertSecToTime'
+
 export default {
   name: 'Item',
   methods:{
     handlePlayerClick(){
+      let { commit } = this.$store;
+      let audioEl = document.getElementById("audio");
       if(!this.isCurrentlyPlaying || (this.isCurrentlyPlaying && this.currentSong !== this.song.file)){
-        this.$store.commit("SET_CURRENT_SONG", this.song.file);
-        this.$store.commit("SET_IS_CURRENTLY_PLAYING", true)
-        this.$store.commit("SET_CURRENT_SONG_PATH");
-        document.getElementById("audio").load();
-        document.getElementById("audio").play();
+        commit("SET_CURRENT_SONG", this.song.file);
+        commit("SET_IS_CURRENTLY_PLAYING", true)
+        commit("SET_CURRENT_SONG_PATH");
+        audioEl.load();
+        //When song is loaded this listener handle song duration events
+        audioEl.onloadeddata = e => {  
+          let time = Math.floor(e.target.duration);
+          commit("SET_CURRENT_SONG_DURATION", convertSecToTime(time));       
+          e.target.play();
+          //every seconds updates passed time of current song
+          e.target.ontimeupdate = e => {
+            commit("SET_CURRENT_TIME", convertSecToTime(Math.floor(e.target.currentTime)));
+          };     
+        };
+        audioEl.play();
       }else{
-        this.$store.commit("SET_IS_CURRENTLY_PLAYING", false);
-        document.getElementById("audio").pause();
+        commit("SET_IS_CURRENTLY_PLAYING", false);
+        audioEl.pause();
       }
     }
   },

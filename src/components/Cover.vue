@@ -1,7 +1,5 @@
 <template>
-<div>
   <img class="cover-container" :src="src" @click="handleCoverClick">
-  </div>
 </template>
 
 <script>
@@ -11,7 +9,6 @@ export default {
     handleCoverClick(){
       this.$store.dispatch("getAlbum",this.album);
       this.$store.commit("SET_CURRENT_ALBUM", this.album);
-
     }
   },
   data: function(){
@@ -25,8 +22,8 @@ export default {
 
 <style>
     .cover-container{
-        width: 200px;
-        height: 200px;
+      width: 200px;
+      height: 200px;
     }
     .cover-container:hover{
       cursor: pointer;

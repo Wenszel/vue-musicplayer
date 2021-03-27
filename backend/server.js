@@ -15,7 +15,12 @@ const server = http.createServer(function(req,res){
             }
             else if (req.url.indexOf(".mp3") != -1) {
                 fs.readFile(__dirname + decodeURI(req.url), function (error, data) {
-                   res.writeHead(200, { "Content-type": "audio/mpeg" });
+                    var stats = fs.statSync(__dirname + decodeURI(req.url));
+                    res.writeHead(200, { 
+                        "Content-type": "audio/mpeg",
+                        "Content-Length": stats.size,
+                        "Accept-Ranges": "bytes" 
+                    });
                    res.write(data);
                    res.end();
                 })
