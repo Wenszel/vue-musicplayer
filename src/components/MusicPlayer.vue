@@ -30,7 +30,8 @@ export default {
       if(!this.isCurrentlyPlaying){
         //Load song and play it from the beginning or do nothing
         this.currentTime == 0 ? document.getElementById("audio").load() : null;
-        this.playSong();
+        commit("SET_IS_CURRENTLY_PLAYING", true);
+        audioEl.play();
       }else{
         commit("SET_IS_CURRENTLY_PLAYING", false);
         audioEl.pause();

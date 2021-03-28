@@ -1,5 +1,5 @@
 <template>
-  <div class="item-container">
+  <div class="item-container" v-bind:style="currentSong===this.song.file ? {backgroundColor: 'lightblue'} : {backgroundColor: 'lightgrey'}">
     <span class="song-name">{{song.file}}</span>
     <span class="song-size">{{song.size}}</span>
     <div class="player-button" @click="handlePlayerClick" v-text="currentSong === song.file && isCurrentlyPlaying ? '||' : '>'"></div>
