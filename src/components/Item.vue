@@ -1,5 +1,5 @@
 <template>
-  <div class="item-container" v-bind:style="currentSong===this.song.file ? {backgroundColor: 'lightblue'} : null">
+  <div class="item-container" v-bind:style="currentSong===song.file ? {backgroundColor: 'lightblue'} : null">
     <span class="album-name">{{currentlyViewedAlbum}}</span>
     <span class="song-name">{{song.file}}</span>
     <span class="song-size">{{song.size}}</span>
@@ -8,9 +8,6 @@
 </template>
 
 <script>
-
-import convertSecToTime from '../convertSecToTime'
-
 export default {
   name: 'Item',
   methods:{
@@ -28,12 +25,11 @@ export default {
         audioEl.load();
         // When song is loaded this listener handle song duration events
         audioEl.onloadeddata = e => {  
-          let time = Math.floor(e.target.duration);
-          commit("SET_SONG_DURATION", convertSecToTime(time));       
+          commit("SET_SONG_DURATION", Math.floor(e.target.duration));       
           e.target.play();
           // Every seconds updates passed time of current song
           e.target.ontimeupdate = e => {
-            commit("SET_CURRENT_TIME", convertSecToTime(Math.floor(e.target.currentTime)));
+            commit("SET_CURRENT_TIME", Math.floor(e.target.currentTime));
           };     
         };
         audioEl.play();

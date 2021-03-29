@@ -9,10 +9,23 @@
     <span class="current-song">{{currentSong.replace(".mp3", "")}}</span>
     <div class="player-buttons">
       <div class="player-button" @click="previousSong">&#60;&#60;</div>
-      <div class="player-button" @click="handleResumeClick" v-text="isCurrentlyPlaying ? '||' : '>'"></div>
+      <div class="player-button" 
+        @click="handleResumeClick" 
+        v-text="isCurrentlyPlaying ? '||' : '>'">
+      </div>
       <div class="player-button" @click="nextSong">&#62;&#62;</div>
     </div>
-    <span class="song-progress">{{currentTime}}/{{songDuration}}</span>
+    <div class="song-progress">
+      <span v-text="currentSongPath ? convertSecToTime(currentTime)+'/'+convertSecToTime(songDuration) : ''">
+      </span>
+      <input 
+      :style="currentSongPath? {display: 'block'} : {display: 'none'}"
+      type="range" 
+      :min="0" 
+      :max="songDuration" 
+      :value="currentTime" 
+      @change="handleProgressBarChange">
+    </div>
   </div>
 </template>
 
@@ -23,6 +36,10 @@ import convertSecToTime from '../convertSecToTime'
 export default {
   name: 'MusicPlayer',
   methods: {
+    handleProgressBarChange(e){
+      document.getElementById("audio").currentTime = e.target.value;
+       this.$store.commit("SET_CURRENT_TIME", e.target.value);
+    },
     handleResumeClick(){
       let { commit } = this.$store;
       let audioEl = document.getElementById("audio");
@@ -84,15 +101,15 @@ export default {
       audioEl.load();
       // When loaded sets duration time in player
       audioEl.onloadeddata = e => {  
-        let time = Math.floor(e.target.duration);
-        commit("SET_SONG_DURATION", convertSecToTime(time));       
+        commit("SET_SONG_DURATION", Math.floor(e.target.duration));    
         e.target.play();
         // Every seconds updates passed time of current song
         e.target.ontimeupdate = e => {
-          commit("SET_CURRENT_TIME", convertSecToTime(Math.floor(e.target.currentTime)));
+          commit("SET_CURRENT_TIME", Math.floor(e.target.currentTime));
         };     
       };
     },
+    convertSecToTime: convertSecToTime,
   },
 
   computed: {
