@@ -1,5 +1,6 @@
 <template>
-  <div class="item-container" v-bind:style="currentSong===this.song.file ? {backgroundColor: 'lightblue'} : {backgroundColor: 'lightgrey'}">
+  <div class="item-container" v-bind:style="currentSong===this.song.file ? {backgroundColor: 'lightblue'} : null">
+    <span class="album-name">{{currentlyViewedAlbum}}</span>
     <span class="song-name">{{song.file}}</span>
     <span class="song-size">{{song.size}}</span>
     <div class="player-button" @click="handlePlayerClick" v-text="currentSong === song.file && isCurrentlyPlaying ? '||' : '>'"></div>
@@ -16,17 +17,21 @@ export default {
     handlePlayerClick(){
       let { commit } = this.$store;
       let audioEl = document.getElementById("audio");
+      // Play track if players is stopped or chosen other song
       if(!this.isCurrentlyPlaying || (this.isCurrentlyPlaying && this.currentSong !== this.song.file)){
+        // Changing player data
+        commit("SET_IS_CURRENTLY_PLAYING", true);
         commit("SET_CURRENT_SONG", this.song.file);
-        commit("SET_IS_CURRENTLY_PLAYING", true)
-        commit("SET_CURRENT_SONG_PATH");
+        commit("SET_CURRENT_ALBUM", this.currentlyViewedAlbum);
+        commit("SET_ALBUM_SONGS", this.files);
+        // Loads track to player based on the data above
         audioEl.load();
-        //When song is loaded this listener handle song duration events
+        // When song is loaded this listener handle song duration events
         audioEl.onloadeddata = e => {  
           let time = Math.floor(e.target.duration);
-          commit("SET_CURRENT_SONG_DURATION", convertSecToTime(time));       
+          commit("SET_SONG_DURATION", convertSecToTime(time));       
           e.target.play();
-          //every seconds updates passed time of current song
+          // Every seconds updates passed time of current song
           e.target.ontimeupdate = e => {
             commit("SET_CURRENT_TIME", convertSecToTime(Math.floor(e.target.currentTime)));
           };     
@@ -39,15 +44,22 @@ export default {
     }
   },
   computed: {
+    files(){
+      return this.$store.getters.getAllFiles;
+    },
+    currentlyViewedAlbum(){
+      return this.$store.getters.getCurrentlyViewedAlbum;
+    },
     currentSong(){
       return this.$store.getters.getCurrentSong;
     },
     isCurrentlyPlaying(){
       return this.$store.getters.getIsCurrentlyPlaying;
     }
-
   },
-  props: ['song','isPlaying']
+  props: {
+    song: Object,
+  }
 }
 </script>
 

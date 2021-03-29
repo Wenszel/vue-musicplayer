@@ -36,12 +36,10 @@ export default {
     files(){
       return this.$store.getters.getAllFiles;
     }
-},
+  },
   mounted: function(){
     this.$store.dispatch("getAlbums");
-    
-
-}
+  }
 }
 </script>
 

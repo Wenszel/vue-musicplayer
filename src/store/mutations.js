@@ -2,29 +2,34 @@ const mutations = {
     
     SET_DIRS(state, dirs) {
         state.dirs = dirs;
-        state.currentAlbum = dirs[0];
+        state.currentlyViewedAlbum = dirs[0];
     },
     SET_FILES(state, files) {
         state.files = files;
-        state.currentSong = files[0].file;
     },
+    SET_CURRENTLY_VIEWED_ALBUM(state, album) {
+        state.currentlyViewedAlbum = album;
+    },
+    //SETTER FOR PLAYER: 
     SET_CURRENT_SONG(state, song) {
-        state.currentSong = song;
+        state.player.song = song;
+        state.currentSongPath = `http://localhost:3000/static/mp3/${state.player.album}/${state.player.song}`;
     },
     SET_CURRENT_ALBUM(state, album) {
-        state.currentAlbum = album;
+        state.player.album = album;
+        state.currentSongPath = `http://localhost:3000/static/mp3/${state.player.album}/${state.player.song}`;
     },
-    SET_CURRENT_SONG_DURATION(state, songDuration){
-        state.currentSongDuration = songDuration;
+    SET_ALBUM_SONGS(state, songs) {
+        state.player.albumSongs = songs;
+    },
+    SET_SONG_DURATION(state, songDuration){
+        state.player.songDuration = songDuration;
     },
     SET_CURRENT_TIME(state, time){
-        state.currentTime = time;
-    },
-    SET_CURRENT_SONG_PATH(state){
-        state.currentSongPath = `http://localhost:3000/static/mp3/${state.currentAlbum}/${state.currentSong}`;
+        state.player.currentTime = time;
     },
     SET_IS_CURRENTLY_PLAYING(state, isCurrentlyPlaying){
-        state.isCurrentlyPlaying = isCurrentlyPlaying;
+        state.player.isCurrentlyPlaying = isCurrentlyPlaying;
     },
     
 }

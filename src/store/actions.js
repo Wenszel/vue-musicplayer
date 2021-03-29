@@ -6,7 +6,7 @@ const actions = {
         .then(response => {
             commit('SET_DIRS', response.data.dirs);
             commit('SET_FILES', response.data.files);
-            commit('SET_CURRENT_SONG_PATH');
+            commit('SET_CURRENTLY_VIEWED_ALBUM', response.data.dirs[0]);
         })
         .catch(function (error) {
             console.log(error);

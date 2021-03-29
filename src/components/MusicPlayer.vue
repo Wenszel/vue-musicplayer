@@ -9,10 +9,10 @@
     <span class="current-song">{{currentSong.replace(".mp3", "")}}</span>
     <div class="player-buttons">
       <div class="player-button" @click="previousSong">&#60;&#60;</div>
-      <div class="player-button" @click="handleResumeClick" v-text=" !currentSongPath || isCurrentlyPlaying ? '||' : '>'"></div>
+      <div class="player-button" @click="handleResumeClick" v-text="isCurrentlyPlaying ? '||' : '>'"></div>
       <div class="player-button" @click="nextSong">&#62;&#62;</div>
     </div>
-    <span class="song-progress">{{currentTime}}/{{currentSongDuration}}</span>
+    <span class="song-progress">{{currentTime}}/{{songDuration}}</span>
   </div>
 </template>
 
@@ -26,56 +26,68 @@ export default {
     handleResumeClick(){
       let { commit } = this.$store;
       let audioEl = document.getElementById("audio");
-      //If song is stopped play it
-      if(!this.isCurrentlyPlaying){
-        //Load song and play it from the beginning or do nothing
-        this.currentTime == 0 ? document.getElementById("audio").load() : null;
-        commit("SET_IS_CURRENTLY_PLAYING", true);
-        audioEl.play();
-      }else{
-        commit("SET_IS_CURRENTLY_PLAYING", false);
-        audioEl.pause();
-      }     
+      // Checkes if song is chosen
+      if(this.currentSongPath){
+        // If song is stopped play it
+        if(!this.isCurrentlyPlaying){
+          // Load song and play it from the beginning or do nothing
+          commit("SET_IS_CURRENTLY_PLAYING", true);
+          audioEl.play();
+        }else{
+          commit("SET_IS_CURRENTLY_PLAYING", false);
+          audioEl.pause();
+        }  
+      }       
     },
+    // Handle previous song button click
     previousSong(){
-      let indexOfCurrentSong = this.files.findIndex(elem => elem.file == this.currentSong);
-      let newSong;
-       // Returns previous song or last song of album if current song is first 
-      if(indexOfCurrentSong-1>=0){
-        newSong = this.files[indexOfCurrentSong-1].file;
-      }else{
-        newSong = this.files[this.files.length-1].file;
+      if(this.currentSongPath){
+        this.$store.commit("SET_CURRENT_SONG", this.findNextSong(false));
+        this.playSong();
       }
-      this.$store.commit("SET_CURRENT_SONG", newSong);
-      this.playSong();
+    },
+    // Handle next song button click
+    nextSong(){  
+      if(this.currentSongPath){
+        this.$store.commit("SET_CURRENT_SONG", this.findNextSong(true));
+        this.playSong(); 
+      }
+    },
+    /*
+      Finds next or previous song
+      next - boolean: next/previous song
+    */
+    findNextSong(next){
+      let indexOfCurrentSong = this.albumSongs.findIndex(elem => elem.file == this.currentSong);
+      if(next){
+        // Returns next song or first song of album if current song is last 
+        if(indexOfCurrentSong+1<this.albumSongs.length){
+          return this.albumSongs[indexOfCurrentSong+1].file;
+        }else{
+          return this.albumSongs[0].file;
+        }
+      }else{
+        // Returns previous song or last song of album if current song is first 
+        if(indexOfCurrentSong-1>=0){
+          return this.albumSongs[indexOfCurrentSong-1].file;
+        }else{
+          return this.albumSongs[this.albumSongs.length-1].file;
+        }
+      }
     },
 
-    nextSong(){  
-      let indexOfCurrentSong = this.files.findIndex(elem => elem.file == this.currentSong);
-      let newSong;
-      // Returns next song or first song of album if current song is last 
-      if(indexOfCurrentSong+1<this.files.length){
-        newSong = this.files[indexOfCurrentSong+1].file;
-      }else{
-        newSong = this.files[0].file;
-      }
-      this.$store.commit("SET_CURRENT_SONG", newSong);
-      this.playSong(); 
-    },
-    
     playSong(){
       let { commit } = this.$store;
       commit("SET_IS_CURRENTLY_PLAYING", true);
-      commit("SET_CURRENT_SONG_PATH"); //sets path for server song request
-      //loads song to player
+      // Loads song to player
       let audioEl = document.getElementById("audio");
       audioEl.load();
-      //when loaded sets duration time in player
+      // When loaded sets duration time in player
       audioEl.onloadeddata = e => {  
         let time = Math.floor(e.target.duration);
-        commit("SET_CURRENT_SONG_DURATION", convertSecToTime(time));       
+        commit("SET_SONG_DURATION", convertSecToTime(time));       
         e.target.play();
-        //every seconds updates passed time of current song
+        // Every seconds updates passed time of current song
         e.target.ontimeupdate = e => {
           commit("SET_CURRENT_TIME", convertSecToTime(Math.floor(e.target.currentTime)));
         };     
@@ -84,27 +96,24 @@ export default {
   },
 
   computed: {
-    files(){
-      return this.$store.getters.getAllFiles;
+    currentSong(){
+      return this.$store.getters.getCurrentSong;
+    },
+    currentSongPath(){
+      return this.$store.getters.getCurrentSongPath;
+    },
+    songDuration(){
+      return this.$store.getters.getSongDuration;
     },
     isCurrentlyPlaying(){
       return this.$store.getters.getIsCurrentlyPlaying;
     },
-    currentSong(){
-      return this.$store.getters.getCurrentSong;
-    },
-    currentSongDuration(){
-      return this.$store.getters.getCurrentSongDuration;
-    },
     currentTime(){
       return this.$store.getters.getCurrentTime;
     },
-    currentAlbum(){
-      return this.$store.getters.getCurrentAlbum;
+    albumSongs(){
+      return this.$store.getters.getAlbumSongs;
     },
-    currentSongPath(){
-      return this.$store.getters.getCurrentSongPath; 
-    }
   },
 }
 </script>
@@ -127,6 +136,8 @@ export default {
     left: 0;
   }
   .song-progress{
+    display: flex;
+    flex-direction: row;
     position: absolute;
     right: 0;
   }

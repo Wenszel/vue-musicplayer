@@ -7,8 +7,8 @@ export default {
   name: 'Cover',
   methods:{
     handleCoverClick(){
-      this.$store.dispatch("getAlbum",this.album);
-      this.$store.commit("SET_CURRENT_ALBUM", this.album);
+      this.$store.dispatch("getAlbum", this.album);
+      this.$store.commit("SET_CURRENTLY_VIEWED_ALBUM", this.album);
     }
   },
   data: function(){
@@ -16,7 +16,9 @@ export default {
       src: `http://localhost:3000/static/mp3/${this.album}/cover.jpg`,
     }
   },
-  props: ['album'],
+  props: {
+    album: String
+  },
 }
 </script>
 

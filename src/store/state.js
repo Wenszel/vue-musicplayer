@@ -1,11 +1,15 @@
 const state = {
-    dirs: [],
-    files: [],
-    currentSong: '',
-    currentAlbum: '',
-    currentTime: '',
-    currentSongDuration: '',
-    currentSongPath: '',
-    isCurrentlyPlaying: false,
+    dirs: [], // All albums names
+    files: [], // Names of songs in currently viewed album
+    currentlyViewedAlbum: '', // Information which album is currently on screen 
+    currentSongPath: '', // Link to track on server
+    player: { // All information about the currently playing track     
+        song: '',
+        album: '',
+        albumSongs: [],
+        songDuration: '',
+        currentTime: '',  
+        isCurrentlyPlaying: false,
+    },
 }
 export default state;

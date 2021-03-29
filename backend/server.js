@@ -2,10 +2,12 @@ const http = require("http");
 const fs = require('fs');
 const qs = require("querystring");
 const url = require("url");
+const PORT = process.env.PORT || 3000;
 const server = http.createServer(function(req,res){
 
     switch (req.method) {
         case "GET": 
+        console.log(req.url);
             if(req.url.indexOf(".jpg") != -1){
                     fs.readFile(__dirname + decodeURI(req.url), function(error, content) {
                         if (error) {
@@ -19,6 +21,7 @@ const server = http.createServer(function(req,res){
                     });
             }
             else if (req.url.indexOf(".mp3") != -1) {
+                console.log("Returned song: " + req.url);
                 fs.readFile(__dirname + decodeURI(req.url), function (error, data) {
                     var stats = fs.statSync(__dirname + decodeURI(req.url));
                     res.writeHead(200, { 
@@ -48,7 +51,7 @@ const server = http.createServer(function(req,res){
     }
 
     function readAlbum( req, res, album ){
-        console.log(album);
+        console.log("readed album: "+album.album);
         let location = `${__dirname}/static/mp3/${album.album}`
         responseObj = {
             album: album,
@@ -110,4 +113,4 @@ function bytesToSize(bytes) {
     return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
  }
 
-server.listen(3000, ()=>{console.log("Server launched")})
+server.listen(PORT, ()=>{console.log(`Server is started at port: ${PORT}`)})
