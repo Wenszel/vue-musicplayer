@@ -6,40 +6,30 @@
       id="audio_src"
       type="audio/mp3" />
     </audio>
-    <span class="current-song">{{currentSong.replace(".mp3", "")}}</span>
-    <div class="player-buttons">
-      <div class="player-button" @click="previousSong">&#60;&#60;</div>
-      <div class="player-button" 
-        @click="handleResumeClick" 
-        v-text="isCurrentlyPlaying ? '||' : '>'">
-      </div>
+    <span class="current-song">{{currentAlbum}} - {{currentSong.replace(".mp3", "")}}</span>
+    <div class="middle">
+      <ProgressBar />
+      <div class="player-buttons">
+        <div class="player-button" @click="previousSong">&#60;&#60;</div>
+        <div class="player-button" 
+          @click="handleResumeClick" 
+          v-text="isCurrentlyPlaying ? '||' : '>'">
+        </div>
       <div class="player-button" @click="nextSong">&#62;&#62;</div>
     </div>
-    <div class="song-progress">
-      <span v-text="currentSongPath ? convertSecToTime(currentTime)+'/'+convertSecToTime(songDuration) : ''">
-      </span>
-      <input 
-      :style="currentSongPath? {display: 'block'} : {display: 'none'}"
-      type="range" 
-      :min="0" 
-      :max="songDuration" 
-      :value="currentTime" 
-      @change="handleProgressBarChange">
     </div>
   </div>
 </template>
 
 <script>
-
-import convertSecToTime from '../convertSecToTime'
+import ProgressBar from './ProgressBar.vue'
 
 export default {
   name: 'MusicPlayer',
+  components: {
+    ProgressBar
+  },
   methods: {
-    handleProgressBarChange(e){
-      document.getElementById("audio").currentTime = e.target.value;
-       this.$store.commit("SET_CURRENT_TIME", e.target.value);
-    },
     handleResumeClick(){
       let { commit } = this.$store;
       let audioEl = document.getElementById("audio");
@@ -109,10 +99,12 @@ export default {
         };     
       };
     },
-    convertSecToTime: convertSecToTime,
   },
 
   computed: {
+    currentAlbum(){
+      return this.$store.getters.getCurrentAlbum;
+    },
     currentSong(){
       return this.$store.getters.getCurrentSong;
     },
@@ -152,14 +144,13 @@ export default {
     position: absolute;
     left: 0;
   }
-  .song-progress{
+  .middle{
     display: flex;
-    flex-direction: row;
-    position: absolute;
-    right: 0;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
-  .player-buttons{
-    
+  .player-buttons{ 
     display: flex;
     flex-direction:row;
     float: left;
