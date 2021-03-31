@@ -9,6 +9,8 @@ const state = {
         albumSongs: [],
         songDuration: '',
         currentTime: '',  
+        shuffle: false,
+        repeat: false,
         isCurrentlyPlaying: false,
     },
 }

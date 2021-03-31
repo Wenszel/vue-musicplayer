@@ -3,7 +3,9 @@
     <span class="album-name">{{currentlyViewedAlbum}}</span>
     <span class="song-name">{{song.file}}</span>
     <span class="song-size">{{song.size}}</span>
-    <div class="player-button" @click="handlePlayerClick" v-text="currentSong === song.file && isCurrentlyPlaying ? '||' : '>'"></div>
+    <div class="player-button" @click="handlePlayerClick">
+      <span :class="currentSong === song.file && isCurrentlyPlaying ? 'icon-pause' : 'icon-play'"></span>
+    </div>
   </div>
 </template>
 

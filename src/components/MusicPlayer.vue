@@ -12,11 +12,15 @@
     <div class="middle">
       <ProgressBar />
       <div class="player-buttons">
-        <div class="player-button options" > <span class="icon-loop"></span> </div>
+        <div class="player-button options" @click="handleRepeat" :style="repeat ? {backgroundColor: 'lightblue'} : {backgroundColor: 'blue'}"> 
+          <span class="icon-loop"></span> 
+        </div>
         <div class="player-button" @click="previousSong"> <span class="icon-fast-bw"></span> </div>
-        <div class="player-button" @click="handleResumeClick"><span :class="isCurrentlyPlaying ? 'icon-play' : 'icon-pause'"></span></div>
+        <div class="player-button" @click="handleResumeClick"><span :class="!isCurrentlyPlaying && currentSongPath ? 'icon-play' : 'icon-pause'"></span></div>
         <div class="player-button" @click="nextSong"><span class="icon-fast-fw"></span></div>
-        <div class="player-button options" ><span class="icon-shuffle"></span> </div>
+        <div class="player-button options" @click="handleShuffle" :style="shuffle ? {backgroundColor: 'lightblue'} : {backgroundColor: 'blue'}">
+          <span class="icon-shuffle"></span> 
+        </div>
     </div>
     <!-- Input to change volume -->
     <VolumeBar />
@@ -34,6 +38,21 @@ export default {
     ProgressBar, VolumeBar
   },
   methods: {
+    handleRepeat(){
+      let { commit } = this.$store;
+      let audioEl = document.getElementById("audio");
+      if(this.repeat){
+        audioEl.loop = false; 
+        commit("SET_REPEAT", false);
+      }else{
+        audioEl.loop = true; 
+        commit("SET_REPEAT", true);
+      }
+    },
+    handleShuffle(){
+      let { commit } = this.$store;
+      this.shuffle ? commit("SET_SHUFFLE", false) : commit("SET_SHUFFLE", true);
+    },
     handleResumeClick(){
       let { commit } = this.$store;
       let audioEl = document.getElementById("audio");
@@ -100,7 +119,20 @@ export default {
         // Every seconds updates passed time of current song
         e.target.ontimeupdate = e => {
           commit("SET_CURRENT_TIME", Math.floor(e.target.currentTime));
-        };     
+        };    
+        // When song ends play next song or random if shuffle 
+        e.target.onended = () => {
+          if (this.shuffle){
+            let newSong;
+            do{
+              newSong = this.albumSongs[Math.floor(Math.random() * this.albumSongs.length)].file;
+            }while( newSong == this.currentSong )
+            this.$store.commit("SET_CURRENT_SONG", newSong);
+          } else{
+            this.$store.commit("SET_CURRENT_SONG", this.findNextSong(true));
+          }
+          this.playSong(); 
+        };
       };
     },
   },
@@ -108,6 +140,12 @@ export default {
   computed: {
     currentAlbum(){
       return this.$store.getters.getCurrentAlbum;
+    },
+    shuffle(){
+      return this.$store.getters.getShuffle;
+    },
+    repeat(){
+      return this.$store.getters.getRepeat;
     },
     currentSong(){
       return this.$store.getters.getCurrentSong;

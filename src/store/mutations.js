@@ -25,6 +25,12 @@ const mutations = {
     SET_SONG_DURATION(state, songDuration){
         state.player.songDuration = songDuration;
     },
+    SET_SHUFFLE(state, shuffle){
+        state.player.shuffle = shuffle;
+    },
+    SET_REPEAT(state, reapat){
+        state.player.repeat = reapat;
+    },
     SET_CURRENT_TIME(state, time){
         state.player.currentTime = time;
     },

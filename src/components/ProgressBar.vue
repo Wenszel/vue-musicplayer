@@ -11,7 +11,7 @@
   </div>
 </template>
 <script> 
-import convertSecToTime from '../convertSecToTime'
+import convertSecToTime from './convertSecToTime'
 
 export default {
   name: 'ProgressBar',

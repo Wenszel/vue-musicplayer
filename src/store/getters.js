@@ -19,6 +19,12 @@ const getters = {
     getCurrentAlbum: function (state) {
         return state.player.album;
     },
+    getShuffle: function (state) {
+        return state.player.shuffle;
+    },
+    getRepeat: function (state) {
+        return state.player.repeat;
+    },
     getAlbumSongs: function (state) {
         return state.player.albumSongs;
     },
