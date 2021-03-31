@@ -35,7 +35,7 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style>
 .progress-bar-container{
   width: 500px;
   flex-direction: row;
@@ -72,7 +72,7 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 }
 input[type=range]::-moz-range-track {
   background: #707070;
-  border: 0;
+  border: 1px solid black;
   border-radius: 21.3px;
   width: 100%;
   height: 8.4px;

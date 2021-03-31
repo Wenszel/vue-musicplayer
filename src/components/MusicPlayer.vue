@@ -4,30 +4,34 @@
       <source
       :src="currentSongPath"
       id="audio_src"
-      type="audio/mp3" />
+      type="audio/mp3">
     </audio>
+    <!-- Displays songs name -->
     <span class="current-song">{{currentAlbum}} - {{currentSong.replace(".mp3", "")}}</span>
+    <!-- Control buttons -->
     <div class="middle">
       <ProgressBar />
       <div class="player-buttons">
-        <div class="player-button" @click="previousSong">&#60;&#60;</div>
-        <div class="player-button" 
-          @click="handleResumeClick" 
-          v-text="isCurrentlyPlaying ? '||' : '>'">
-        </div>
-      <div class="player-button" @click="nextSong">&#62;&#62;</div>
+        <div class="player-button options" > <span class="icon-loop"></span> </div>
+        <div class="player-button" @click="previousSong"> <span class="icon-fast-bw"></span> </div>
+        <div class="player-button" @click="handleResumeClick"><span :class="isCurrentlyPlaying ? 'icon-play' : 'icon-pause'"></span></div>
+        <div class="player-button" @click="nextSong"><span class="icon-fast-fw"></span></div>
+        <div class="player-button options" ><span class="icon-shuffle"></span> </div>
     </div>
+    <!-- Input to change volume -->
+    <VolumeBar />
     </div>
   </div>
 </template>
 
 <script>
 import ProgressBar from './ProgressBar.vue'
+import VolumeBar from './VolumeBar.vue'
 
 export default {
   name: 'MusicPlayer',
   components: {
-    ProgressBar
+    ProgressBar, VolumeBar
   },
   methods: {
     handleResumeClick(){
@@ -128,6 +132,10 @@ export default {
 </script>
 
 <style>
+  .options {
+    width: 30px !important;
+    height: 30px !important;
+  }
   .player-container{
     position: -webkit-sticky; /* Safari */  
     position: sticky;
@@ -138,7 +146,7 @@ export default {
     z-index: 1;
     width: 100vw;
     background-color: grey;
-    height: 10vh;
+    height: 75px;
   }
   .current-song{
     position: absolute;
@@ -152,6 +160,7 @@ export default {
   }
   .player-buttons{ 
     display: flex;
+    align-items: center;
     flex-direction:row;
     float: left;
   }

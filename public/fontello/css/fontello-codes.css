@@ -1,0 +1,11 @@
+
+.icon-volume-off:before { content: '\e800'; } /* '' */
+.icon-volume-down:before { content: '\e801'; } /* '' */
+.icon-volume:before { content: '\e802'; } /* '' */
+.icon-volume-up:before { content: '\e803'; } /* '' */
+.icon-play:before { content: '\e804'; } /* '' */
+.icon-pause:before { content: '\e805'; } /* '' */
+.icon-fast-fw:before { content: '\e806'; } /* '' */
+.icon-fast-bw:before { content: '\e807'; } /* '' */
+.icon-loop:before { content: '\e808'; } /* '' */
+.icon-shuffle:before { content: '\e809'; } /* '' */
