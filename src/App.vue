@@ -3,6 +3,7 @@
     <div id="menu">
       <!--Displays selection menu of albums-->
       <div class="container covers-container">
+        <div></div>
         <Cover v-for="album in dirs" :key="album" :album="album"></Cover>
       </div>
       <!--Displays songs of album-->

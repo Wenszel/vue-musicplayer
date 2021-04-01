@@ -12,13 +12,13 @@
     <div class="middle">
       <ProgressBar />
       <div class="player-buttons">
-        <div class="player-button options" @click="handleRepeat" :style="repeat ? {backgroundColor: 'lightblue'} : {backgroundColor: 'blue'}"> 
+        <div class="player-button options" @click="handleRepeat" :style="repeat ? {backgroundColor: 'lightblue'} : null"> 
           <span class="icon-loop"></span> 
         </div>
         <div class="player-button" @click="previousSong"> <span class="icon-fast-bw"></span> </div>
         <div class="player-button" @click="handleResumeClick"><span :class="!isCurrentlyPlaying && currentSongPath ? 'icon-play' : 'icon-pause'"></span></div>
         <div class="player-button" @click="nextSong"><span class="icon-fast-fw"></span></div>
-        <div class="player-button options" @click="handleShuffle" :style="shuffle ? {backgroundColor: 'lightblue'} : {backgroundColor: 'blue'}">
+        <div class="player-button options" @click="handleShuffle" :style="shuffle ? {backgroundColor: 'lightblue'} : null">
           <span class="icon-shuffle"></span> 
         </div>
     </div>
@@ -203,6 +203,7 @@ export default {
     float: left;
   }
   .player-button{
+    margin: 3px;
     color: white;
     width: 50px;
     height: 50px;

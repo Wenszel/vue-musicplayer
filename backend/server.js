@@ -3,11 +3,20 @@ const fs = require('fs');
 const qs = require("querystring");
 const url = require("url");
 const PORT = process.env.PORT || 3000;
+
+//Database config 
+var Datastore = require('nedb');
+//Importing database methods
+const db = require(__dirname + "/database/db-methods.js");
+const songsStore  = new Datastore({
+    filename: './database/liked_songs.db',
+    autoload: true
+});
+
 const server = http.createServer(function(req,res){
 
     switch (req.method) {
         case "GET": 
-        console.log(req.url);
             if(req.url.indexOf(".jpg") != -1){
                     fs.readFile(__dirname + decodeURI(req.url), function(error, content) {
                         if (error) {
@@ -39,12 +48,14 @@ const server = http.createServer(function(req,res){
             req.on("data", function (chunk) {
 
                 let body = JSON.parse(chunk).body
-                let {action, album} = body;
+                let {action, album, song} = body;
 
                 if(action == 'albums'){
                     readAlbums(req, res);
                 }else if(action == 'album'){
                     readAlbum(req,res,album);
+                }else if(action == 'like'){
+                    db.insert(album, song)
                 }
             })
             break;
