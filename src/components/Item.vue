@@ -3,6 +3,7 @@
     <span class="album-name">{{currentlyViewedAlbum}}</span>
     <span class="song-name">{{song.file}}</span>
     <span class="song-size">{{song.size}}</span>
+    <div class="player-button" @click="handleLikeButtonClick">LIKE</div>
     <div class="player-button" @click="handlePlayerClick">
       <span :class="currentSong === song.file && isCurrentlyPlaying ? 'icon-pause' : 'icon-play'"></span>
     </div>
@@ -10,9 +11,13 @@
 </template>
 
 <script>
+import axios from "axios"
 export default {
   name: 'Item',
   methods:{
+    handleLikeButtonClick(){
+      axios.post('https://localhost:3000/', {song: song.file, album: song.album})
+    },
     handlePlayerClick(){
       let { commit } = this.$store;
       let audioEl = document.getElementById("audio");

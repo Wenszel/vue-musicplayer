@@ -3,15 +3,8 @@ const fs = require('fs');
 const qs = require("querystring");
 const url = require("url");
 const PORT = process.env.PORT || 3000;
-
-//Database config 
-var Datastore = require('nedb');
-//Importing database methods
 const db = require(__dirname + "/database/db-methods.js");
-const songsStore  = new Datastore({
-    filename: './database/liked_songs.db',
-    autoload: true
-});
+
 
 const server = http.createServer(function(req,res){
 
@@ -55,15 +48,15 @@ const server = http.createServer(function(req,res){
                 }else if(action == 'album'){
                     readAlbum(req,res,album);
                 }else if(action == 'like'){
-                    db.insert(album, song)
+                    db.insert(song, album);
                 }
             })
             break;
     }
 
     function readAlbum( req, res, album ){
-        console.log("readed album: "+album.album);
-        let location = `${__dirname}/static/mp3/${album.album}`
+        console.log("readed album: "+album.name);
+        let location = `${__dirname}/static/mp3/${album.name}`
         responseObj = {
             album: album,
             files: [],
@@ -77,6 +70,7 @@ const server = http.createServer(function(req,res){
                     var stats = fs.statSync(`${location}/${file}`);
                     responseObj['files'].push({
                         file: file, 
+                        album: album.name,
                         size: bytesToSize(stats.size)
                     })
                 }  
@@ -105,7 +99,11 @@ const server = http.createServer(function(req,res){
                 files.forEach( file => {
                     if(file.indexOf('.mp3') != -1){
                         var stats = fs.statSync(`${__dirname}/static/mp3/${responseObj['dirs'][0]}/${file}`);
-                        responseObj['files'].push({file: file, size: bytesToSize(stats.size)})
+                        responseObj['files'].push({
+                            file: file, 
+                            album: responseObj['dirs'][0],
+                            size: bytesToSize(stats.size)
+                        })
                     }
                 });  
                 

@@ -14,7 +14,7 @@ const actions = {
     },
 
     getAlbum({ commit }, album){
-        axios.post('http://localhost:3000/', JSON.stringify({body:{action: 'album', album:{album}}}))
+        axios.post('http://localhost:3000/', JSON.stringify({body:{action: 'album', name:{album}}}))
         .then(response => {
             commit('SET_FILES', response.data.files);
         })
