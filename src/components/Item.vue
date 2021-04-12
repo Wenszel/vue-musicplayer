@@ -3,7 +3,9 @@
     <span class="album-name">{{currentlyViewedAlbum}}</span>
     <span class="song-name">{{song.file}}</span>
     <span class="song-size">{{song.size}}</span>
-    <div class="player-button" @click="handleLikeButtonClick">LIKE</div>
+    <div class="player-button like-button" @click="handleLikeButtonClick">
+      <span :class="song.isLiked ? 'icon-heart' : 'icon-heart-empty'"></span>
+    </div>
     <div class="player-button" @click="handlePlayerClick">
       <span :class="currentSong === song.file && isCurrentlyPlaying ? 'icon-pause' : 'icon-play'"></span>
     </div>
@@ -16,7 +18,10 @@ export default {
   name: 'Item',
   methods:{
     handleLikeButtonClick(){
-      axios.post('https://localhost:3000/', {song: song.file, album: song.album})
+      axios.post('http://localhost:3000/', JSON.stringify({body:{action: 'like', song: this.song.file, album: this.song.album}}))
+      .then(response => {
+        this.song.isLiked = !response.data.isLiked
+      });
     },
     handlePlayerClick(){
       let { commit } = this.$store;
@@ -67,6 +72,9 @@ export default {
 </script>
 
 <style>
+.like-button{
+  right: 40px !important;
+}
 .item-container{
   display: flex;
   border-bottom: 1px solid black;

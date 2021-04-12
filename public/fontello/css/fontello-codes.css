@@ -3,9 +3,11 @@
 .icon-volume-down:before { content: '\e801'; } /* '' */
 .icon-volume:before { content: '\e802'; } /* '' */
 .icon-volume-up:before { content: '\e803'; } /* '' */
-.icon-play:before { content: '\e804'; } /* '' */
-.icon-pause:before { content: '\e805'; } /* '' */
-.icon-fast-fw:before { content: '\e806'; } /* '' */
-.icon-fast-bw:before { content: '\e807'; } /* '' */
+.icon-fast-fw:before { content: '\e804'; } /* '' */
+.icon-fast-bw:before { content: '\e805'; } /* '' */
+.icon-play:before { content: '\e806'; } /* '' */
+.icon-pause:before { content: '\e807'; } /* '' */
 .icon-loop:before { content: '\e808'; } /* '' */
 .icon-shuffle:before { content: '\e809'; } /* '' */
+.icon-heart:before { content: '\e80a'; } /* '' */
+.icon-heart-empty:before { content: '\e80b'; } /* '' */

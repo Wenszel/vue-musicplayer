@@ -38,48 +38,51 @@ const server = http.createServer(function(req,res){
             break;
         case "POST":
             res.setHeader('Access-Control-Allow-Origin', '*');
-            req.on("data", function (chunk) {
-
+            req.on("data", async function (chunk) {
                 let body = JSON.parse(chunk).body
                 let {action, album, song} = body;
-
                 if(action == 'albums'){
                     readAlbums(req, res);
                 }else if(action == 'album'){
                     readAlbum(req,res,album);
                 }else if(action == 'like'){
-                    db.insert(song, album);
+                    let isLiked = await db.find(song, album);
+                    isLiked ? db.delete(song, album) : db.insert(song, album);
+                    res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
+                    res.end(JSON.stringify({isLiked: isLiked}));  
                 }
             })
             break;
     }
 
-    function readAlbum( req, res, album ){
-        console.log("readed album: "+album.name);
-        let location = `${__dirname}/static/mp3/${album.name}`
+    function readAlbum( req, res, readedAlbum ){
+        let location = `${__dirname}/static/mp3/${readedAlbum.name}`
         responseObj = {
-            album: album,
+            album: readedAlbum,
             files: [],
         };
-        fs.readdir(location , function (err, files) {
+        fs.readdir(location ,function (err, files) {
             if (err) {
                 return console.log(err);
             }
-            files.forEach( file => {
+            files.forEach( async file => {
                 if(file.indexOf('.mp3') != -1){
                     var stats = fs.statSync(`${location}/${file}`);
                     responseObj['files'].push({
                         file: file, 
-                        album: album.name,
+                        album: readedAlbum.name,
+                        isLiked: await db.find(file, readedAlbum.name),
                         size: bytesToSize(stats.size)
                     })
+                    console.log(responseObj['files'])
                 }  
+            }).then(()=>{
+                res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
+                res.end(JSON.stringify(responseObj));  
             });  
-            res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
-            res.end(JSON.stringify(responseObj));  
+            
         });    
     }
-
     function readAlbums( req, res ) {
         let responseObj = {
             dirs: [],
@@ -92,23 +95,24 @@ const server = http.createServer(function(req,res){
             files.forEach( file => {
                 responseObj['dirs'].push(file)
             });
-            fs.readdir(`${__dirname}/static/mp3/${responseObj['dirs'][0]}`, function (err, files) {
+            fs.readdir(`${__dirname}/static/mp3/${responseObj['dirs'][0]}`, async function (err, files) {
                 if (err) {
                     return console.log(err);
                 }
-                files.forEach( file => {
+                for(const file of files){
                     if(file.indexOf('.mp3') != -1){
                         var stats = fs.statSync(`${__dirname}/static/mp3/${responseObj['dirs'][0]}/${file}`);
                         responseObj['files'].push({
                             file: file, 
+                            isLiked: await db.find(file, responseObj['dirs'][0]),
                             album: responseObj['dirs'][0],
                             size: bytesToSize(stats.size)
                         })
+                        console.log(responseObj['files'])
                     }
-                });  
-                
-                res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
-                res.end(JSON.stringify(responseObj));  
+                }
+                    res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
+                    res.end(JSON.stringify(responseObj));  
             });        
         });
     }
