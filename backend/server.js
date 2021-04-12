@@ -23,7 +23,6 @@ const server = http.createServer(function(req,res){
                     });
             }
             else if (req.url.indexOf(".mp3") != -1) {
-                console.log("Returned song: " + req.url);
                 fs.readFile(__dirname + decodeURI(req.url), function (error, data) {
                     var stats = fs.statSync(__dirname + decodeURI(req.url));
                     res.writeHead(200, { 
@@ -38,49 +37,51 @@ const server = http.createServer(function(req,res){
             break;
         case "POST":
             res.setHeader('Access-Control-Allow-Origin', '*');
+            res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
             req.on("data", async function (chunk) {
                 let body = JSON.parse(chunk).body
-                let {action, album, song} = body;
-                if(action == 'albums'){
+                let {action, album, file, size} = body;
+                if(action === 'allAlbums'){
                     readAlbums(req, res);
-                }else if(action == 'album'){
-                    readAlbum(req,res,album);
-                }else if(action == 'like'){
-                    let isLiked = await db.find(song, album);
-                    isLiked ? db.delete(song, album) : db.insert(song, album);
-                    res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
+                }else if(action ==='specificAlbum'){
+                    readAlbum(req, res, album);
+                }else if(action === 'likeSong'){
+                    let isLiked = await db.find(file, album);
+                    isLiked ? db.delete(file, album) : db.insert(file, album, size);
                     res.end(JSON.stringify({isLiked: isLiked}));  
+                }else if(action === 'likedSongs'){
+                    let responseObj = await db.findAll();
+                    responseObj.forEach( file => file['isLiked'] = true);
+                    res.end(JSON.stringify(responseObj));
                 }
             })
             break;
     }
 
-    function readAlbum( req, res, readedAlbum ){
-        let location = `${__dirname}/static/mp3/${readedAlbum.name}`
+    function readAlbum( req, res, album ){
+        let location = `${__dirname}/static/mp3/${album}`
         responseObj = {
-            album: readedAlbum,
+            album: album,
             files: [],
         };
-        fs.readdir(location ,function (err, files) {
+        fs.readdir(location , async function (err, files) {
             if (err) {
                 return console.log(err);
             }
-            files.forEach( async file => {
+            for(const file of files){
+                // Checks is file mp3 format
                 if(file.indexOf('.mp3') != -1){
+                    // Gets file size
                     var stats = fs.statSync(`${location}/${file}`);
                     responseObj['files'].push({
                         file: file, 
-                        album: readedAlbum.name,
-                        isLiked: await db.find(file, readedAlbum.name),
+                        album: album,
+                        isLiked: await db.find(file, album),
                         size: bytesToSize(stats.size)
                     })
-                    console.log(responseObj['files'])
                 }  
-            }).then(()=>{
-                res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
-                res.end(JSON.stringify(responseObj));  
-            });  
-            
+            }
+            res.end(JSON.stringify(responseObj));  
         });    
     }
     function readAlbums( req, res ) {
@@ -108,11 +109,9 @@ const server = http.createServer(function(req,res){
                             album: responseObj['dirs'][0],
                             size: bytesToSize(stats.size)
                         })
-                        console.log(responseObj['files'])
                     }
                 }
-                    res.writeHead(200, {'Content-Type':'application/json;charset=UTF-8'});
-                    res.end(JSON.stringify(responseObj));  
+                res.end(JSON.stringify(responseObj));  
             });        
         });
     }
@@ -126,4 +125,4 @@ function bytesToSize(bytes) {
     return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
  }
 
-server.listen(PORT, ()=>{console.log(`Server is started at port: ${PORT}`)})
+server.listen(PORT, () => { console.log(`Server is started at port: ${PORT}`) });

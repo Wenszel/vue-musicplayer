@@ -1,6 +1,6 @@
 <template>
   <div class="item-container" v-bind:style="currentSong===song.file ? {backgroundColor: 'lightblue'} : null">
-    <span class="album-name">{{currentlyViewedAlbum}}</span>
+    <span class="album-name">{{song.album}}</span>
     <span class="song-name">{{song.file}}</span>
     <span class="song-size">{{song.size}}</span>
     <div class="player-button like-button" @click="handleLikeButtonClick">
@@ -18,7 +18,7 @@ export default {
   name: 'Item',
   methods:{
     handleLikeButtonClick(){
-      axios.post('http://localhost:3000/', JSON.stringify({body:{action: 'like', song: this.song.file, album: this.song.album}}))
+      axios.post('http://localhost:3000/', JSON.stringify({body:{action: 'likeSong', file: this.song.file, album: this.song.album, size: this.song.size}}))
       .then(response => {
         this.song.isLiked = !response.data.isLiked
       });
@@ -81,7 +81,7 @@ export default {
   flex-direction: row;
 }
 .item-container>div{
-  position: absolute;
+  position: relative;
   height: 40px !important;
   width: 40px !important;
   right: 0;

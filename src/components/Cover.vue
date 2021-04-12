@@ -24,6 +24,8 @@ export default {
 
 <style>
     .cover-container{
+      text-align: center;
+      font-size: 100px;
       width: 200px;
       height: 200px;
     }
