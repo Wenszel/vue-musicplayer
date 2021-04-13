@@ -20,7 +20,7 @@ export default {
     handleLikeButtonClick(){
       axios.post('http://localhost:3000/', JSON.stringify({body:{action: 'likeSong', file: this.song.file, album: this.song.album, size: this.song.size}}))
       .then(response => {
-        this.song.isLiked = !response.data.isLiked
+        this.song.isLiked = !response.data.isLiked;
       });
     },
     handlePlayerClick(){
@@ -37,6 +37,9 @@ export default {
         audioEl.load();
         // When song is loaded this listener handle song duration events
         audioEl.onloadeddata = e => {  
+          console.log(audioEl.src);
+          //console.log(e.target.duration);
+          //console.log(e.target)
           commit("SET_SONG_DURATION", Math.floor(e.target.duration));       
           e.target.play();
           // Every seconds updates passed time of current song

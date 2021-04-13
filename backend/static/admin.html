@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Upload album</title>
+    <style>
+        body{
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+        #main{
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            font-size: 5rem;
+            font-weight: bold;
+            width: 500px;
+            height: 500px;
+            background-color: purple;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">Drag album here</div>
+    <script>
+        document.querySelector("html").ondragover = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        document.querySelector("html").ondrop = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        document.querySelector("#main").ondragenter = function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        document.querySelector("#main").ondragover = function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+
+        document.querySelector("#main").ondragleave = function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        document.querySelector("#main").ondrop = function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            var fd = new FormData();
+            var files = e.dataTransfer.files;
+            for(const file of files){
+                fd.append('file', file); 
+            }
+            $.ajax({
+                url: '/upload',
+                type: 'POST',
+                data: fd,
+                contentType: false, // ajax nie określa typu przesyłanych danych
+                processData: false, // ajax w żaden sposób nie przetwarza danych
+                success: function (response) {
+                    alert("Successfully uploaded to server")
+                },
+            
+            })
+        }
+
+    </script>
+</body>
+</html>

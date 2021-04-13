@@ -20,7 +20,6 @@
 </template>
 
 <script>
-//importing components
 import axios from "axios"
 import Cover from './components/Cover.vue'
 import Item from './components/Item.vue'
@@ -34,7 +33,7 @@ export default {
   methods:{
     handleLikedSongsClicked(){
       axios.post('http://localhost:3000/', JSON.stringify({body:{action:"likedSongs"}}))
-      .then(response => {
+      .then( response => {
         this.$store.commit('SET_FILES', response.data);
         console.log(response.data);
       });
