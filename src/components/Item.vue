@@ -1,14 +1,16 @@
 <template>
-  <div class="item-container" v-bind:style="currentSong===song.file ? {backgroundColor: 'lightblue'} : null">
-    <span class="album-name">{{song.album}}</span>
+  <div class="item-container" v-bind:style="currentSong===song.file ? {backgroundColor: '#2a2a2a'} : null">
+    <div class="player-button" @click="handlePlayerClick">
+      <span :class="currentSong === song.file && isCurrentlyPlaying ? 'icon-pause' : 'icon-play'"></span>
+    </div>
+    
     <span class="song-name">{{song.file}}</span>
+    <span class="album-name">{{song.album}}</span>
     <span class="song-size">{{song.size}}</span>
     <div class="player-button like-button" @click="handleLikeButtonClick">
       <span :class="song.isLiked ? 'icon-heart' : 'icon-heart-empty'"></span>
     </div>
-    <div class="player-button" @click="handlePlayerClick">
-      <span :class="currentSong === song.file && isCurrentlyPlaying ? 'icon-pause' : 'icon-play'"></span>
-    </div>
+    
   </div>
 </template>
 
@@ -20,7 +22,7 @@ export default {
     handleLikeButtonClick(){
       axios.post('http://localhost:3000/', JSON.stringify({body:{action: 'likeSong', file: this.song.file, album: this.song.album, size: this.song.size}}))
       .then(response => {
-        this.song.isLiked = !response.data.isLiked;
+        this.song.isLiked = !response.data.isLiked
       });
     },
     handlePlayerClick(){
@@ -75,22 +77,23 @@ export default {
 </script>
 
 <style>
-.like-button{
-  right: 40px !important;
-}
 .item-container{
   display: flex;
-  border-bottom: 1px solid black;
+  align-items: center;
+  justify-content:center;
+  height: 40px;
+  width: 100%;
   flex-direction: row;
 }
-.item-container>div{
-  position: relative;
-  height: 40px !important;
-  width: 40px !important;
-  right: 0;
+.item-container:hover{
+  background-color: #2a2a2a;
 }
 .song-name{
-  width: 500px;
+  font-family: 'Roboto 300', sans-serif;
+  width: 600px;
+}
+.album-name{
+  width: 300px;
 }
 .song-size{
   width:50px;

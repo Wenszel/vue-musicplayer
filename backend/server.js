@@ -9,7 +9,7 @@ const server = http.createServer(function(req,res){
 
     switch (req.method) {
         case "GET": 
-            if(req.url.indexOf(".jpg") != -1 || req.url.indexOf(".png") != -1){
+            if(req.url.indexOf(".jpg") != -1){
                     fs.readFile(__dirname + decodeURI(req.url), function(error, content) {
                         if (error) {
                             res.writeHead(500);
@@ -65,7 +65,7 @@ const server = http.createServer(function(req,res){
                 })
             }else if( req.url === '/upload'){
                 var dir = `${__dirname}/static/mp3/${Math.floor(Math.random()*100000)}/`;
-                
+
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir);
                 }
@@ -73,11 +73,18 @@ const server = http.createServer(function(req,res){
                 form.uploadDir = dir;
                 form.multiples = true;
                 form.parse(req, function (err, fields, files) {
-                    if(Array.isArray(files)){
+                    if(Array.isArray(files.file)){
                         files.file.forEach((file)=>{
-                            fs.rename(file.path, dir + file.name, function (err) {
-                                if(err) console.log(err)
-                             });
+                            if(file.name.indexOf('.mp3') != -1){
+                                fs.rename(file.path, dir + file.name, function (err) {
+                                    if(err) console.log(err)
+                                 });
+                            }else{
+                                fs.rename(file.path, dir + 'cover.jpg', function (err) {
+                                    if(err) console.log(err)
+                                 });
+                            }
+                            
                         })
                     } 
                  });

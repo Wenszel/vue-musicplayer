@@ -1,5 +1,5 @@
 <template>
-  <div class="progress-bar-container" :style="currentSongPath ? {display: 'flex'} : {display: 'none'}">
+  <div class="progress-bar-container">
     <span v-text="convertSecToTime(this.currentTime)"></span>
     <input 
         type="range" 
@@ -37,8 +37,12 @@ export default {
 </script>
 <style>
 .progress-bar-container{
-  width: 500px;
+  width: 300px;
+  display: flex;
   flex-direction: row;
+}
+.progress-bar-container>span{
+  margin: 10px 10px 10px 10px;
 }
 input[type=range] {
   width: 100%;

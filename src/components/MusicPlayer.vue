@@ -7,33 +7,35 @@
       type="audio/mp3">
     </audio>
     <!-- Displays songs name -->
-    <span class="current-song">{{currentAlbum}} - {{currentSong.replace(".mp3", "")}}</span>
+    <div class="current-song" v-text=" currentSongPath ? `${currentAlbum} - ${currentSong.replace('.mp3','')}`:''">
+      {{currentAlbum}} - {{currentSong.replace(".mp3", "")}}
+    </div>
     <!-- Control buttons -->
     <div class="middle">
-      <ProgressBar />
       <div class="player-buttons">
-        <div class="player-button options" @click="handleRepeat" :style="repeat ? {backgroundColor: 'lightblue'} : null"> 
+        <div class="player-button" @click="handleRepeat" :style="repeat ? {color: 'green'} : null"> 
           <span class="icon-loop"></span> 
         </div>
         <div class="player-button" @click="previousSong">
           <span class="icon-fast-bw"></span> 
         </div>
-        <div class="player-button" @click="handleResumeClick">
+        <div class="resume-button" @click="handleResumeClick">
           <span :class="!isCurrentlyPlaying && currentSongPath ? 'icon-play' : 'icon-pause'"></span>
         </div>
         <div class="player-button" @click="nextSong">
           <span class="icon-fast-fw"></span>
         </div>
         <div 
-        class="player-button options" 
+        class="player-button" 
         @click="handleShuffle" 
-        :style="shuffle ? {backgroundColor: 'lightblue'} : null">
+        :style="shuffle ? {color: 'green'} : null">
           <span class="icon-shuffle"></span> 
         </div>
+      </div>
+      <ProgressBar />
     </div>
     <!-- Input to change volume -->
     <VolumeBar />
-    </div>
   </div>
 </template>
 
@@ -179,27 +181,26 @@ export default {
 </script>
 
 <style>
-  .options {
-    width: 30px !important;
-    height: 30px !important;
-  }
   .player-container{
-    position: -webkit-sticky; /* Safari */  
-    position: sticky;
-    display: flex;
-    justify-content:center;
-    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    position: absolute;
     bottom:0;
-    z-index: 1;
-    width: 100vw;
-    background-color: grey;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     height: 75px;
+    width: 100%;
+    background-color: #0b0b09;
+    border-top: 2px solid #282828;
   }
   .current-song{
-    position: absolute;
-    left: 0;
+    margin-left: 10px;
   }
   .middle{
+    position: absolute;
+    left: 45%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -211,19 +212,29 @@ export default {
     flex-direction:row;
     float: left;
   }
-  .player-button{
-    margin: 3px;
-    color: white;
-    width: 50px;
-    height: 50px;
+  .resume-button{
+    background-color: white;
+    color: black;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
-    justify-content: center;
-    align-items: center;
     display: flex;
-    background-color: blue;
+    justify-content:center;
+    text-align: center;
+    align-items: center;
+
+  }
+  .player-button{ 
+    margin-left: 5px;
+    margin-right: 5px;
+    opacity: 0.6;
   }
   .player-button:hover{
+    opacity: 1;
     cursor: pointer;
-    background-color: lightblue;
+  }
+  .middle{
+    display: flex;
+    flex-direction: column;
   }
 </style>

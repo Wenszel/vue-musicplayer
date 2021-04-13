@@ -33,8 +33,7 @@ export default {
 </script>
 <style scoped>
     .volume-container {
-        position: absolute;
-        right: 0;
+        margin-right: 10px;
         display: flex;
         flex-direction: row;
     }
