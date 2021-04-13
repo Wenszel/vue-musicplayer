@@ -1,5 +1,5 @@
 <template>
-  <img class="cover-container" :src="src" @click="handleCoverClick">
+  <img class="cover-container" :src="src" @click="handleCoverClick" @error="replaceByDefault">
 </template>
 
 <script>
@@ -9,6 +9,9 @@ export default {
     handleCoverClick(){
       this.$store.dispatch("getAlbum", this.album);
       this.$store.commit("SET_CURRENTLY_VIEWED_ALBUM", this.album);
+    },
+    replaceByDefault(e){
+      e.target.src = 'http://localhost:3000/static/icons/default_cover.jpg'
     }
   },
   data: function(){

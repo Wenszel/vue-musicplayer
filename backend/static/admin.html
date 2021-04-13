@@ -7,13 +7,22 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Upload album</title>
     <style>
+        img{
+            width: 20px;
+            height: 20px;
+        }
         body{
             justify-content: center;
             align-items: center;
             display: flex;
+            flex-direction: column;
+        }
+        li{
+            display: flex;
+            flex-direction: row;
         }
         #main{
-            text-align: center;
+            justify-content: center;
             padding: 10px;
             display: flex;
             align-items: center;
@@ -27,7 +36,9 @@
     </style>
 </head>
 <body>
-    <div id="main">Drag album here</div>
+    <div id="main">Drag files here</div>
+    <ol id="file-list">
+    </ol>
     <script>
         document.querySelector("html").ondragover = function (e) {
             e.preventDefault();
@@ -38,6 +49,8 @@
             e.stopPropagation();
         }
         document.querySelector("#main").ondragenter = function (e) {
+            document.getElementById("main").innerHTML = "Drop here";
+            document.getElementById("main").style.backgroundColor = "plum";
             e.stopPropagation();
             e.preventDefault();
         }
@@ -47,10 +60,16 @@
         }
 
         document.querySelector("#main").ondragleave = function (e) {
+            document.getElementById("main").innerHTML = "Drag files here";
+            document.getElementById("main").style.backgroundColor = "purple";
             e.stopPropagation();
             e.preventDefault();
         }
         document.querySelector("#main").ondrop = function (e) {
+            document.getElementById("file-list").innerHTML = '';
+            document.getElementById("main").innerHTML = "Drag files here";
+            document.getElementById("main").style.backgroundColor = "purple";
+            
             e.stopPropagation();
             e.preventDefault();
 
@@ -58,17 +77,31 @@
             var files = e.dataTransfer.files;
             for(const file of files){
                 fd.append('file', file); 
+                let liEl = document.createElement("li");
+                let pEl = document.createElement("p");
+                let imgEl = document.createElement("img");
+                pEl.innerHTML=file.name;
+                if(file.name.indexOf('.mp3') != -1){
+                    imgEl.src = `./static/icons/mp3.png`
+                }else if(file.name.indexOf('.jpg') != -1 || file.name.indexOf('.png')!=-1){
+                    console.log(file.name);
+                    imgEl.src = `./static/icons/jpg.png`
+                }else{
+                    imgEl.src = `./static/icons/unknown.png` 
+                }
+                liEl.append(imgEl);
+                liEl.append(pEl);
+                document.getElementById("file-list").append(liEl);
             }
             $.ajax({
                 url: '/upload',
                 type: 'POST',
                 data: fd,
-                contentType: false, // ajax nie określa typu przesyłanych danych
-                processData: false, // ajax w żaden sposób nie przetwarza danych
+                contentType: false,
+                processData: false,
                 success: function (response) {
                     alert("Successfully uploaded to server")
-                },
-            
+                },     
             })
         }
 

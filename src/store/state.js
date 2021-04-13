@@ -6,7 +6,7 @@ const state = {
     player: { // All information about the currently playing track     
         song: '',
         album: '',
-        albumSongs: [],
+        albumSongs: [], // Other songs of album
         songDuration: '',
         currentTime: '',  
         shuffle: false,

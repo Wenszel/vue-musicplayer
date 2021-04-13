@@ -71,7 +71,7 @@ export default {
     height: 90vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: scroll;
   }
   .covers-container{
     width: 200px;
